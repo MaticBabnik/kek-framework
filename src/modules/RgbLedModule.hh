@@ -1,4 +1,5 @@
 #pragma once
+#include "Arduino.h"
 #include "KekFramework.hh"
 
 class RgbLedModule : public Kek::Module

@@ -75,7 +75,7 @@ function heapFormat(mem: number) {
             <ul>
                 <li>Cores: <span class="spec">{{data.chip.cores}}</span></li>
                 <li>Clock: <span class="spec">{{data.chip.freq}}MHz</span></li>
-                <li>Revision: <span class="spec">{{data.chip.rev}}MHz</span></li>
+                <li>Revision: <span class="spec">{{data.chip.rev}}</span></li>
             </ul>
 
             </p>
