@@ -1,35 +1,47 @@
 <script lang="ts" setup >
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/authStore';
+
+const auth = useAuthStore();
+const r = useRouter();
 
 const username = ref<string>("");
 const password = ref<string>("");
 
-const r = useRouter();
-function login() {
-    localStorage.setItem("username",username.value);
-    localStorage.setItem("password",password.value);
+async function login() {
+    try {
+        await auth.login(username.value, password.value);
+        localStorage.setItem("username", username.value);
+        localStorage.setItem("password", password.value);
 
-    //do stuff
-    r.replace('/');
+        r.replace('/');
+    } catch {
+        alert("Invalid username/password");
+        username.value = "";
+        password.value = "";
+    }
 }
 </script>
 
 <template>
-    <div id="login">
-        <h1>Login</h1>
-        <input type="text" autocomplete="username" name="Username" id="username" placeholder="Username"
-            @keypress.enter="login" v-model="username">
-        <input type="password" autocomplete="current-password" name="Password" id="password" placeholder="Password"
-            @keypress.enter="login" v-model="password">
-        <input type="button" id="go" value="Go" @keypress.enter="login" @click="login">
+    <div class="center-login">
+        <div id="login">
+            <h1>Login</h1>
+            <input class="button" type="text" autocomplete="username" name="Username" id="username"
+                placeholder="Username" @keypress.enter="login" v-model="username">
+            <input class="button" type="password" autocomplete="current-password" name="Password" id="password"
+                placeholder="Password" @keypress.enter="login" v-model="password">
+            <input class="button" type="button" id="go" value="Go" @keypress.enter="login" @click="login">
+        </div>
     </div>
 </template>
 
 <style lang="less" scoped>
-h1 {
+#login h1 {
     font-size: 3rem;
     margin: 1rem;
+    text-align: center;
 }
 
 #login {
@@ -40,19 +52,13 @@ h1 {
 #username,
 #password,
 #go {
-    padding: .5rem;
     margin: .25rem;
-    outline: none;
-    border: none;
-    color: #fff;
-    background-color: #0005;
-    border-radius: 1rem;
+}
+</style>
 
-    &:active,
-    &:focus {
-        transition: .2s;
-        box-shadow: 0 0 .2rem #0cf;
-        background-color: #0006;
-    }
+<style lang="less">
+.center-login {
+    display: grid;
+    place-items: center;
 }
 </style>

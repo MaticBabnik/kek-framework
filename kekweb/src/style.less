@@ -15,45 +15,78 @@
   -webkit-text-size-adjust: 100%;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
+
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+  font-weight: 300;
 }
 
-button {
+.button {
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: 2px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
   background-color: #1a1a1a;
-  cursor: pointer;
+
   transition: border-color 0.25s;
 }
-button:hover {
-  border-color: #646cff;
+
+.button:hover {
+  border-color: #646cffaa;
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+
+.button:focus,
+.button:focus-visible,
+.button:active {
+  border-color: #646cff;
+  outline: none;
 }
 
 .card {
   padding: 2em;
 }
 
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+// basically second div in #app (the one with the content)
+#app>div:last-of-type {
+  flex: 1;
+}
+
+//modules 
+.mod {
+  background-color: coral;
+  border-radius: .5rem;
+  padding: .5rem;
+}
+
+.mod-2x2 {
+  grid-row-end: span 2;
+  grid-column-end: span 2;
+}
+
+.mod-2x1 {
+  grid-row-end: span 2;
+  grid-column-end: span 1;
+}
+
+.mod-1x2 {
+  grid-row-end: span 1;
+  grid-column-end: span 2;
 }

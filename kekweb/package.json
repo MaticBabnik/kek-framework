@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vue-tsc --noEmit && vite build --emptyOutDir",
     "preview": "vite preview"
   },
   "dependencies": {
     "less-loader": "^11.0.0",
+    "pinia": "^2.0.22",
     "vue": "^3.2.37",
     "vue-router": "^4.1.5"
   },
