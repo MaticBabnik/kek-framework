@@ -98,7 +98,7 @@ void Kek::ModuleHandler::handleWriteRequestWithBody(AsyncWebServerRequest *req, 
     }
 
     Kek::info("Write request from %d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
-
+    auto mbase = ESP.getFreeHeap();
     StaticJsonDocument<KEK_JSON_WRITE_SIZE> idoc;
     StaticJsonDocument<KEK_JSON_READ_SIZE> odoc;
 
@@ -136,12 +136,13 @@ void Kek::ModuleHandler::handleWriteRequestWithBody(AsyncWebServerRequest *req, 
             Kek::error("Device '%s' does not exist", name);
         }
     }
-    Kek::log("Input json doc %d/%dB", idoc.memoryUsage(), idoc.capacity());
-    Kek::log("Output json doc %d/%dB", odoc.memoryUsage(), odoc.capacity());
 
     AsyncResponseStream *response = req->beginResponseStream("application/json");
+
     serializeJson(odoc, *response);
     req->send(response);
+
+    delete response; //ffsk
 }
 
 void Kek::ModuleHandler::handleListRequest(AsyncWebServerRequest *req)

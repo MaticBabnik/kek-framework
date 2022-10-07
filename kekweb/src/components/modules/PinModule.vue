@@ -30,7 +30,6 @@ async function toggle() {
 
     try {
         const resp = await kek.writeAndUpdate(props.modId, { state });
-        console.log(resp);
     } catch {
         buttonState.value = !state; //revert buttonState
     }
