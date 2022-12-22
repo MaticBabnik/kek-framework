@@ -13,11 +13,11 @@
 #include "modules/PinModule.hh"
 #include "modules/DhtModule.hh"
 #include "modules/SystemModule.hh"
-#include "modules/RgbLedModule.hh"
 
 AsyncWebServer aws(80);
 Kek::ModuleHandler mh(&aws);
 
+#pragma region Entry
 bool getConfig(JsonDocument *doc)
 {
   File f = SPIFFS.open("/config.json", "r");
@@ -119,16 +119,21 @@ die:
   ESP.restart();
 }
 
+#pragma endregion Entry
+
 void setup()
 {
   init();
 
   // Device modules here
-  // mh.AddDevice("led", new PinModule(2));
-  // mh.AddDevice("dht22", new DhtModule(26, DHT22));
-  // mh.AddDevice("dht11", new DhtModule(25, DHT11));
-  // mh.AddDevice("rgb", new RgbLedModule(13, 12, 14));
-  mh.AddDevice("esp", new SystemModule());
+  mh.AddDevice("grelec delavnica", new PinModule(13));
+  mh.AddDevice("grelec garaza", new PinModule(12));
+
+  mh.AddDevice("senzor garaza", new DhtModule(27, DHT22));
+  mh.AddDevice("senzor delavnica", new DhtModule(16, DHT11));
+  mh.AddDevice("senzor vrt", new DhtModule(17, DHT11));
+
+  mh.AddDevice("system", new SystemModule());
   // end of device modules
 
   aws.onNotFound([](AsyncWebServerRequest *request)

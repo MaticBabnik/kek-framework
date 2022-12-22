@@ -28,10 +28,10 @@ void SystemModule::setup(Kek::Scheduler &scheduler)
     Kek::log("Sys::setup");
     scheduler.once(10000, []()
                    {
-                    Kek::info("10s passed (once)");
+                    Kek::info("Alive for 10s");
                     return false; });
     scheduler.loop(1000, []()
                    {
-                        Kek::info("1s passed");
+                        Kek::info("Still alive");
                         return true; });
 }
