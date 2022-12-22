@@ -1,11 +1,13 @@
 #include <Arduino.h>
 
-#include <SPIFFS.h>
 #include <WiFi.h>
+#include <SPIFFS.h>
 #include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
-#include <KekFramework.hh>
 #include <ArduinoJson.h>
+#include <ESPAsyncWebServer.h>
+
+#define KEK_SCHEDULER_SLOTS 32
+#include <KekFramework.hh>
 
 // modules
 #include "modules/PinModule.hh"
@@ -122,10 +124,10 @@ void setup()
   init();
 
   // Device modules here
-  mh.AddDevice("led", new PinModule(2));
-  mh.AddDevice("dht22", new DhtModule(26, DHT22));
-  mh.AddDevice("dht11", new DhtModule(25, DHT11));
-  mh.AddDevice("rgb", new RgbLedModule(13, 12, 14));
+  // mh.AddDevice("led", new PinModule(2));
+  // mh.AddDevice("dht22", new DhtModule(26, DHT22));
+  // mh.AddDevice("dht11", new DhtModule(25, DHT11));
+  // mh.AddDevice("rgb", new RgbLedModule(13, 12, 14));
   mh.AddDevice("esp", new SystemModule());
   // end of device modules
 
@@ -137,4 +139,5 @@ void setup()
 
 void loop()
 {
+  mh.SchedTick(true);
 }

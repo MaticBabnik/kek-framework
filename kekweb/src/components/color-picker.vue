@@ -98,6 +98,7 @@ function onUp() {
 
 onMounted(() => {
     wheel.value?.addEventListener("mousedown", onDown);
+    // wheel.value?.addEventListener("touchstart",onDown);
 });
 onUnmounted(() => {
     window.removeEventListener("mouseup", onUp);
@@ -139,6 +140,8 @@ onUnmounted(() => {
         &.nomouse {
             cursor: none;
         }
+
+        touch-action: none;
 
         height: 15rem;
         aspect-ratio: 1;

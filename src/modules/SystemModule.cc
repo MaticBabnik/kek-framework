@@ -22,3 +22,16 @@ int SystemModule::write(const char *key, JsonDocument &data, JsonDocument &respo
     response[key] = "Read only";
     return 2;
 }
+
+void SystemModule::setup(Kek::Scheduler &scheduler)
+{
+    Kek::log("Sys::setup");
+    scheduler.once(10000, []()
+                   {
+                    Kek::info("10s passed (once)");
+                    return false; });
+    scheduler.loop(1000, []()
+                   {
+                        Kek::info("1s passed");
+                        return true; });
+}

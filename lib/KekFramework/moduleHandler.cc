@@ -1,17 +1,5 @@
 #include "moduleHandler.hh"
 
-#ifndef KEK_JSON_LIST_SIZE
-#define KEK_JSON_LIST_SIZE 384
-#endif
-
-#ifndef KEK_JSON_READ_SIZE
-#define KEK_JSON_READ_SIZE 2048
-#endif
-
-#ifndef KEK_JSON_WRITE_SIZE
-#define KEK_JSON_WRITE_SIZE 512
-#endif
-
 bool Kek::CstrCmp::operator()(const char *a, const char *b) const
 {
     return strcmp(a, b) < 0;
@@ -20,7 +8,6 @@ bool Kek::CstrCmp::operator()(const char *a, const char *b) const
 Kek::ModuleHandler::ModuleHandler(AsyncWebServer *aws)
 {
     this->user = this->pass = nullptr;
-
     this->modules = new std::map<const char *, Module *, CstrCmp>();
 
     aws->on(
@@ -48,6 +35,7 @@ Kek::ModuleHandler::ModuleHandler(AsyncWebServer *aws)
 void Kek::ModuleHandler::AddDevice(const char *name, Kek::Module *mod)
 {
     this->modules->insert(std::pair<const char *, Module *>(name, mod));
+    mod->setup(this->scheduler);
 }
 
 void Kek::ModuleHandler::setAuth(const char *user, const char *pass)
@@ -142,7 +130,7 @@ void Kek::ModuleHandler::handleWriteRequestWithBody(AsyncWebServerRequest *req, 
     serializeJson(odoc, *response);
     req->send(response);
 
-    delete response; //ffsk
+    delete response;
 }
 
 void Kek::ModuleHandler::handleListRequest(AsyncWebServerRequest *req)
@@ -169,4 +157,11 @@ void Kek::ModuleHandler::handleListRequest(AsyncWebServerRequest *req)
 
     serializeJson(doc, *response);
     req->send(response);
+}
+
+void Kek::ModuleHandler::SchedTick(bool sleep)
+{
+    auto t = this->scheduler.tick();
+    if (sleep)
+        delay(t);
 }

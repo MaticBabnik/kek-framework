@@ -16,3 +16,8 @@ int Kek::Module::write(const char *key, JsonDocument &data, JsonDocument &respon
     response[key]["status"] = "ok";
     return 0;
 }
+
+void Kek::Module::setup(Scheduler &scheduler)
+{
+    Kek::warn("default setup called by '%s'", this->getModuleName());
+}
