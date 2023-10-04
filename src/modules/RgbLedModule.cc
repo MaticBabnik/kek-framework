@@ -14,7 +14,8 @@ int RgbLedModule::read(const char *key, JsonDocument &data)
     return 0;
 }
 
-int RgbLedModule::write(const char *key, JsonDocument &data, JsonDocument &response)
+int RgbLedModule::write(const char *key, JsonDocument &data,
+                        JsonDocument &response)
 {
     if (!data[key]["state"].is<JsonArray>() || data[key]["state"].size() != 3)
     {

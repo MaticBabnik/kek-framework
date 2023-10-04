@@ -11,7 +11,8 @@ int PinModule::read(const char *key, JsonDocument &data)
     return 0;
 }
 
-int PinModule::write(const char *key, JsonDocument &data, JsonDocument &response)
+int PinModule::write(const char *key, JsonDocument &data,
+                     JsonDocument &response)
 {
     if (!data[key]["state"].is<bool>())
     {

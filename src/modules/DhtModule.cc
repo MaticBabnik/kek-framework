@@ -34,7 +34,8 @@ int DhtModule::read(const char *key, JsonDocument &data)
     return 0;
 }
 
-int DhtModule::write(const char *key, JsonDocument &data, JsonDocument &response)
+int DhtModule::write(const char *key, JsonDocument &data,
+                     JsonDocument &response)
 {
     response[key] = "Read only";
     return 2;

@@ -76,7 +76,8 @@ uint32_t Kek::Scheduler::tick()
                 Kek::error("%s", e.what());
             }
 
-            now = millis(); // update now since the handler could be slow
+            now = millis(); // update now since the handler could be
+                            // slow
 
             if (e->loop > 0)
             {
@@ -85,7 +86,8 @@ uint32_t Kek::Scheduler::tick()
             else
             {
                 e->time = 0;
-                continue; // skip the next part because event is now invalid
+                continue; // skip the next part because event is now
+                          // invalid
             }
         }
 
@@ -96,7 +98,8 @@ uint32_t Kek::Scheduler::tick()
     if (next < now)
     {
         Kek::warn("Scheduler took too long (or time overflowed)");
-        return 0; // report that the next handler is now to make sure we don't fuck up
+        return 0; // report that the next handler is now to make sure we
+                  // don't fuck up
     }
 
     return next - now;

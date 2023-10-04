@@ -11,25 +11,33 @@ Kek::ModuleHandler::ModuleHandler(AsyncWebServer *aws)
     this->modules = new std::map<const char *, Module *, CstrCmp>();
 
     aws->on(
-        "/api/read", HTTP_POST, [this](AsyncWebServerRequest *req)
-        { this->handleReadRequest(req); },
-        nullptr, [this](AsyncWebServerRequest *req, uint8_t *data, size_t len, size_t index, size_t total)
-        { this->handleReadRequestWithBody(req, data, len); });
+        "/api/read", HTTP_POST,
+        [this](AsyncWebServerRequest *req) { this->handleReadRequest(req); },
+        nullptr,
+        [this](AsyncWebServerRequest *req, uint8_t *data, size_t len,
+               size_t index, size_t total) {
+            this->handleReadRequestWithBody(req, data, len);
+        });
     aws->on(
-        "/api/write", HTTP_POST, [this](AsyncWebServerRequest *req)
-        { req->send(400, "text/plain", "No body"); },
-        nullptr, [this](AsyncWebServerRequest *req, uint8_t *data, size_t len, size_t index, size_t total)
-        { this->handleWriteRequestWithBody(req, data, len); });
-    aws->on(
-        "/api/list", HTTP_GET, [this](AsyncWebServerRequest *req)
-        { this->handleListRequest(req); });
-    aws->on("/api/auth", HTTP_ANY, [this](AsyncWebServerRequest *req)
-            {
+        "/api/write", HTTP_POST,
+        [this](AsyncWebServerRequest *req) {
+            req->send(400, "text/plain", "No body");
+        },
+        nullptr,
+        [this](AsyncWebServerRequest *req, uint8_t *data, size_t len,
+               size_t index, size_t total) {
+            this->handleWriteRequestWithBody(req, data, len);
+        });
+    aws->on("/api/list", HTTP_GET, [this](AsyncWebServerRequest *req) {
+        this->handleListRequest(req);
+    });
+    aws->on("/api/auth", HTTP_ANY, [this](AsyncWebServerRequest *req) {
         auto auth = req->authenticate(this->user, this->pass);
         if (!auth)
             req->send(401, "text/plain", "Not authenticated");
         else
-            req->send(200, "text/plain", "OK"); });
+            req->send(200, "text/plain", "OK");
+    });
 }
 
 void Kek::ModuleHandler::AddDevice(const char *name, Kek::Module *mod)
@@ -50,14 +58,16 @@ void Kek::ModuleHandler::handleReadRequest(AsyncWebServerRequest *req)
 
     if (this->user != nullptr && !req->authenticate(this->user, this->pass))
     {
-        Kek::info("Unauthorized request from %d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
+        Kek::info("Unauthorized request from %d.%d.%d.%d", ip[0], ip[1], ip[2],
+                  ip[3]);
         req->send(401, "text/plain", "Unauthorized");
     }
 
     Kek::info("Read * request from %d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
 
     StaticJsonDocument<KEK_JSON_READ_SIZE> doc;
-    AsyncResponseStream *response = req->beginResponseStream("application/json");
+    AsyncResponseStream *response =
+        req->beginResponseStream("application/json");
 
     for (const auto &p : *this->modules)
     {
@@ -70,18 +80,21 @@ void Kek::ModuleHandler::handleReadRequest(AsyncWebServerRequest *req)
     req->send(response);
 }
 
-void Kek::ModuleHandler::handleReadRequestWithBody(AsyncWebServerRequest *req, uint8_t *data, size_t len)
+void Kek::ModuleHandler::handleReadRequestWithBody(AsyncWebServerRequest *req,
+                                                   uint8_t *data, size_t len)
 {
     req->send(501, "text/plain", "Nism se napisu te kode sefe");
 }
 
-void Kek::ModuleHandler::handleWriteRequestWithBody(AsyncWebServerRequest *req, uint8_t *data, size_t len)
+void Kek::ModuleHandler::handleWriteRequestWithBody(AsyncWebServerRequest *req,
+                                                    uint8_t *data, size_t len)
 {
     auto ip = req->client()->remoteIP();
 
     if (this->user != nullptr && !req->authenticate(this->user, this->pass))
     {
-        Kek::info("Unauthorized request from %d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
+        Kek::info("Unauthorized request from %d.%d.%d.%d", ip[0], ip[1], ip[2],
+                  ip[3]);
         req->send(401, "text/plain", "Unauthorized");
     }
 
@@ -125,7 +138,8 @@ void Kek::ModuleHandler::handleWriteRequestWithBody(AsyncWebServerRequest *req, 
         }
     }
 
-    AsyncResponseStream *response = req->beginResponseStream("application/json");
+    AsyncResponseStream *response =
+        req->beginResponseStream("application/json");
 
     serializeJson(odoc, *response);
     req->send(response);
@@ -139,14 +153,16 @@ void Kek::ModuleHandler::handleListRequest(AsyncWebServerRequest *req)
 
     if (this->user != nullptr && !req->authenticate(this->user, this->pass))
     {
-        Kek::info("Unauthorized request from %d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
+        Kek::info("Unauthorized request from %d.%d.%d.%d", ip[0], ip[1], ip[2],
+                  ip[3]);
         req->send(401, "text/plain", "Unauthorized");
     }
 
     Kek::info("List request from %d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
 
     StaticJsonDocument<KEK_JSON_LIST_SIZE> doc;
-    AsyncResponseStream *response = req->beginResponseStream("application/json");
+    AsyncResponseStream *response =
+        req->beginResponseStream("application/json");
 
     for (const auto &p : *this->modules)
     {

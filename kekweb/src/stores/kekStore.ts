@@ -1,36 +1,42 @@
 import { defineStore } from "pinia";
-import { getEnvironmentData } from "worker_threads";
 import { useAuthStore } from "./authStore";
 
-
 export const useKekStore = defineStore("kek", {
-
     state() {
         return {
-            maxReadInterval: 2000,
+            maxReadInterval: 1000,
             lastRead: 0,
             initalized: false,
             data: {} as Record<string, string | Object>,
-            modules: {} as Record<string, string>
-        }
+            modules: {} as Record<string, string>,
+        };
     },
     actions: {
         async init(maxReadInterval?: number) {
             if (this.initalized) return this.modules;
 
-            if (typeof maxReadInterval === "number") this.maxReadInterval = maxReadInterval;
+            if (typeof maxReadInterval === "number")
+                this.maxReadInterval = maxReadInterval;
 
             const auth = useAuthStore();
 
             console.log(auth.header);
 
-            const modulesR = await fetch(`${import.meta.env.VITE_API_URL}/api/list`, {
-                method: "GET", headers: auth.header
-            });
+            const modulesR = await fetch(
+                `${import.meta.env.VITE_API_URL}/api/list`,
+                {
+                    method: "GET",
+                    headers: auth.header,
+                }
+            );
 
-            const dataR = await fetch(`${import.meta.env.VITE_API_URL}/api/read`, {
-                method: "POST", headers: auth.header
-            });
+            const dataR = await fetch(
+                `${import.meta.env.VITE_API_URL}/api/read`,
+                {
+                    method: "POST",
+                    headers: auth.header,
+                }
+            );
 
             this.modules = await modulesR.json();
             this.data = await dataR.json();
@@ -41,15 +47,20 @@ export const useKekStore = defineStore("kek", {
          * Reads data from the server or returns cached data
          */
         async readAll() {
-            if (this.lastRead + this.maxReadInterval > Date.now()) return this.data;
+            if (this.lastRead + this.maxReadInterval > Date.now())
+                return this.data;
 
             this.lastRead = Date.now();
 
             const auth = useAuthStore();
 
-            const dataR = await fetch(`${import.meta.env.VITE_API_URL}/api/read`, {
-                method: "POST", headers: auth.header
-            });
+            const dataR = await fetch(
+                `${import.meta.env.VITE_API_URL}/api/read`,
+                {
+                    method: "POST",
+                    headers: auth.header,
+                }
+            );
 
             this.data = await dataR.json();
             return this.data;
@@ -57,11 +68,22 @@ export const useKekStore = defineStore("kek", {
         /**
          * The main write method; can write to multiple modules at once
          */
-        async writeMany(data: Record<string, any>): Promise<Record<string, any>> {
+        async writeMany(
+            data: Record<string, any>
+        ): Promise<Record<string, any>> {
             const auth = useAuthStore();
-            const writeR = await fetch(`${import.meta.env.VITE_API_URL}/api/write`, {
-                method: "POST", headers: { ...auth.header, Accept: "application/json", 'Content-Type': "application/json" }, body: JSON.stringify(data),
-            });
+            const writeR = await fetch(
+                `${import.meta.env.VITE_API_URL}/api/write`,
+                {
+                    method: "POST",
+                    headers: {
+                        ...auth.header,
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                }
+            );
 
             const response = await writeR.json();
             return response;
@@ -81,9 +103,18 @@ export const useKekStore = defineStore("kek", {
             return response;
         },
         /**
+         * A wrapper around `write` that writes to a single module and updates the store's data
+         */
+        async writeAndUpdateSane(modId: string, data: any) {
+            const response = await this.write(modId, data);
+            return (this.data[modId] = response);
+        },
+        /**
          * A wrapper around `writeMany` that writes to multiple modules and updates the store's data
          */
-        async writeManyAndUpdate(data: Record<string, any>): Promise<Record<string, any>> {
+        async writeManyAndUpdate(
+            data: Record<string, any>
+        ): Promise<Record<string, any>> {
             const response = await this.writeMany(data);
             this.data = { ...response, ...this.data };
             return response;
@@ -93,6 +124,6 @@ export const useKekStore = defineStore("kek", {
          */
         fromCache(id: string): string | Object | undefined {
             return this.data[id];
-        }
-    }
+        },
+    },
 });

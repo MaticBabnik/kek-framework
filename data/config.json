@@ -1,7 +1,7 @@
 {
     "username": "admin",
     "password": "admin",
-    "hotspot": true,
-    "ssid": "Eversince",
-    "key": "DrainGang"
+    "hotspot": false,
+    "ssid": "TP-Link_D176",
+    "key": "11414155"
 }

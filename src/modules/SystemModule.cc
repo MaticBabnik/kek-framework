@@ -17,7 +17,8 @@ int SystemModule::read(const char *key, JsonDocument &data)
     return 0;
 }
 
-int SystemModule::write(const char *key, JsonDocument &data, JsonDocument &response)
+int SystemModule::write(const char *key, JsonDocument &data,
+                        JsonDocument &response)
 {
     response[key] = "Read only";
     return 2;
@@ -26,12 +27,4 @@ int SystemModule::write(const char *key, JsonDocument &data, JsonDocument &respo
 void SystemModule::setup(Kek::Scheduler &scheduler)
 {
     Kek::log("Sys::setup");
-    scheduler.once(10000, []()
-                   {
-                    Kek::info("Alive for 10s");
-                    return false; });
-    scheduler.loop(1000, []()
-                   {
-                        Kek::info("Still alive");
-                        return true; });
 }
